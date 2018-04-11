@@ -1,58 +1,49 @@
-# XMRig
+# CNRig
 
-:warning: **You must update miners to version 2.5 before April 6 due [Monero PoW change](https://getmonero.org/2018/02/11/PoW-change-and-key-reuse.html).**
+[![GitHub release](https://img.shields.io/github/release/cnrig/cnrig/all.svg)](https://github.com/cnrig/cnrig/releases)
+[![GitHub Release Date](https://img.shields.io/github/release-date-pre/cnrig/cnrig.svg)](https://github.com/cnrig/cnrig/releases)
+[![GitHub license](https://img.shields.io/github/license/cnrig/cnrig.svg)](https://github.com/cnrig/cnrig/blob/master/LICENSE)
 
-[![Github All Releases](https://img.shields.io/github/downloads/xmrig/xmrig/total.svg)](https://github.com/xmrig/xmrig/releases)
-[![GitHub release](https://img.shields.io/github/release/xmrig/xmrig/all.svg)](https://github.com/xmrig/xmrig/releases)
-[![GitHub Release Date](https://img.shields.io/github/release-date-pre/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/releases)
-[![GitHub license](https://img.shields.io/github/license/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/blob/master/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/network)
+CNRig is a high performance CryptoNight CPU miner for Linux.
+Based on the formidable [XMRig](https://github.com/xmrig/xmrig), with an automatic update mechanism, so you don't have to worry about changing PoW algorithms.
 
-XMRig is a high performance Monero (XMR) CPU miner, with official support for Windows.
-Originally based on cpuminer-multi with heavy optimizations/rewrites and removing a lot of legacy code, since version 1.0.0 completely rewritten from scratch on C++.
+[//]: # (* [Roadmap](https://github.com/xmrig/xmrig/issues/106) for next releases.)
 
-* This is the **CPU-mining** version, there is also a [NVIDIA GPU version](https://github.com/xmrig/xmrig-nvidia) and [AMD GPU version]( https://github.com/xmrig/xmrig-amd).
-* [Roadmap](https://github.com/xmrig/xmrig/issues/106) for next releases.
-
-<img src="http://i.imgur.com/OKZRVDh.png" width="619" >
+[//]: # (<img src="http://i.imgur.com/OKZRVDh.png" width="619" >)
 
 #### Table of contents
 * [Features](#features)
 * [Download](#download)
 * [Usage](#usage)
 * [Algorithm variations](#algorithm-variations)
-* [Build](https://github.com/xmrig/xmrig/wiki/Build)
+* [Compatibility](#compatibility)
 * [Common Issues](#common-issues)
 * [Other information](#other-information)
-* [Donations](#donations)
 * [Release checksums](#release-checksums)
 * [Contacts](#contacts)
 
 ## Features
+* Automatic updates.
+* Binary compatible with many Linux distributions.
 * High performance.
-* Official Windows support.
-* Small Windows executable, without dependencies.
-* x86/x64 support.
 * Support for backup (failover) mining server.
-* keepalived support.
-* Command line options compatible with cpuminer.
 * CryptoNight-Lite support for AEON.
+* CryptoNight-Heavy support for SUMO.
 * Smart automatic [CPU configuration](https://github.com/xmrig/xmrig/wiki/Threads).
 * Nicehash support
 * It's open source software.
 
 ## Download
-* Binary releases: https://github.com/xmrig/xmrig/releases
-* Git tree: https://github.com/xmrig/xmrig.git
-  * Clone with `git clone https://github.com/xmrig/xmrig.git` :hammer: [Build instructions](https://github.com/xmrig/xmrig/wiki/Build).
+* Binary releases: https://github.com/cnrig/cnrig/releases
+* Git tree: https://github.com/cnrig/cnrig.git
+  * Clone with `git clone https://github.com/cnrig/cnrig.git`
 
 ## Usage
 Use [config.xmrig.com](https://config.xmrig.com/xmrig) to generate, edit or share configurations.
 
 ### Options
 ```
-  -a, --algo=ALGO          cryptonight (default) or cryptonight-lite
+  -a, --algo=ALGO          cryptonight (default), cryptonight-lite or cryptonight-heavy
   -o, --url=URL            URL of mining server
   -O, --userpass=U:P       username:password pair for mining server
   -u, --user=USERNAME      username for mining server
@@ -87,17 +78,25 @@ Use [config.xmrig.com](https://config.xmrig.com/xmrig) to generate, edit or shar
 Also you can use configuration via config file, default **config.json**. You can load multiple config files and combine it with command line options.
 
 ## Algorithm variations
-Since version 0.8.0.
 * `--av=1` For CPUs with hardware AES.
 * `--av=2` Lower power mode (double hash) of `1`.
 * `--av=3` Software AES implementation.
 * `--av=4` Lower power mode (double hash) of `3`.
 
-## Common Issues
-### HUGE PAGES unavailable
-* Run XMRig as Administrator.
-* Since version 0.8.0 XMRig automatically enables SeLockMemoryPrivilege for current user, but reboot or sign out still required. [Manual instruction](https://msdn.microsoft.com/en-gb/library/ms190730.aspx).
+## Compatibility
+CNRig is compiled 100% statically and should work on a wide variety of Linux distributions, It has been tested with:
 
+| Distro           | Kernel     | Compatible   |
+| ---------------- | ----------:|:------------:|
+| Ubuntu 18.04     | 4.15       | ?            |
+| Ubuntu 12.04     | 3.2        | ?            |
+| Ubuntu 10.04     | 2.6.32     | ?            |
+| Ubuntu 8.04      | 2.6.24     | ?            |
+| CentOS 6         | 2.6.32     | Yes          |
+| CentOS 5         | 2.6.18     | Yes          |
+|                  |            |              |
+
+## Common Issues
 ## Other information
 * No HTTP support, only stratum protocol support.
 * No TLS support.
@@ -117,19 +116,11 @@ Please note performance is highly dependent on system load. The numbers above ar
 * Try setup optimal cpu affinity.
 * Enable fast memory (Large/Huge pages).
 
-## Donations
-* XMR: `48edfHu7V9Z84YzzMa6fUueoELZ9ZRXq9VetWzYGzKt52XU5xvqgzYnDK9URnRoJMk1j8nLwEVsaSWJ4fhdUyZijBGUicoD`
-* BTC: `1P7ujsXeX7GxQwHNnJsRMgAdNkFZmNVqJT`
-
 ## Release checksums
 ### SHA-256
 ```
-232af0c5f3b1cdbc2d90b514873a764b434d5621d2790da67954b35c17e44fe3 xmrig-2.6.0-beta2-xenial-amd64.tar.gz/xmrig-2.6.0-beta2/xmrig
-2366a06729d4de538ef511862bf11d0c7ad40fd245e7aeab3c1957307d63471a xmrig-2.6.0-beta2-gcc-win32.zip/xmrig.exe
-2f6538c765e001d13ca380cbc1558d51efcb97d4bccdfa40993cb872be4e9efd xmrig-2.6.0-beta2-gcc-win64.zip/xmrig.exe
-3c0479acb78a3cee8fe416ee438dbff09c786acf50fbaf28a820127fcd0c6e62 xmrig-2.6.0-beta2-msvc-win64.zip/xmrig.exe
 ```
 
 ## Contacts
-* support@xmrig.com
-* [reddit](https://www.reddit.com/user/XMRig/)
+* [https://github.com/cnrig/cnrig/issues](https://github.com/cnrig/cnrig/issues)
+* mode0x13@firemail.cc

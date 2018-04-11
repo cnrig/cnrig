@@ -26,10 +26,12 @@
 #include <mbedtls/sha256.h>
 #include <unistd.h>
 
-#include "version.h"
+#include "core/Config.h"
+#include "core/Controller.h"
 #include "log/Log.h"
 #include "update/cacert.h"
 #include "update/updater.h"
+#include "version.h"
 
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
@@ -44,7 +46,8 @@ static const char* meta_url = "https://raw.githubusercontent.com/cnrig/cnrig/mas
 static const char* cacert_file = ".cnrig.cacert.pem";
 static const char* backup_file = ".cnrig.previous";
 static fs::path cacert_path;
-
+static fs::path exe_path_;
+static fs::path exe_dir_;
 
 bool startswith(const std::string& s, const std::string& prefix) {
     return s.substr(0, prefix.length()) == prefix;
@@ -54,8 +57,8 @@ std::string sha256sum(const std::string& data) {
     uint8_t digest[32];
     std::ostringstream hexdigest;
     mbedtls_sha256_ret((const unsigned char*) data.c_str(), data.length(), digest, 0);
-    hexdigest << std::hex << std::setfill('0') << std::setw(2);
     for (int i=0; i<32; i++) {
+        hexdigest << std::hex << std::setfill('0') << std::setw(2);
         hexdigest << static_cast<int>(digest[i]);
     }
     return hexdigest.str();
@@ -99,12 +102,15 @@ Updater::Updater(char **argv, xmrig::Controller *controller) :
     saved_stdout = dup(1);
     saved_stderr = dup(2);
 
-    cacert_path = exe_dir().append(cacert_file);
+    cacert_path = exe_dir_.append(cacert_file);
     writeCAcerts(cacert_path.c_str());
     if (!fs::exists(cacert_path)) {
         std::cerr << "[UP] failed to extract CA certificates" << std::endl;
         quit(1);
     }
+
+    exe_path_ = exe_path();
+    exe_dir_ = exe_dir();
 }
 
 
@@ -166,7 +172,11 @@ void Updater::update() {
         return;
     }
     if (strverscmp(APP_VERSION, doc["Version"].GetString()) < 0) {
-        LOG_INFO("[UP] New version available: %s", doc["Version"].GetString());
+        if (m_controller->config()->isColors()) {
+            LOG_INFO("[UP] \x1B[01;32mNew version available: %s", doc["Version"].GetString());
+        } else {
+            LOG_INFO("[UP] New version available: %s", doc["Version"].GetString());
+        }
         upgrade(doc["URL"].GetString(), doc["SHA2-256"].GetString());
     }
 }
@@ -210,11 +220,11 @@ void Updater::upgrade(const std::string& url, const std::string& sha256) {
     }
     LOG_INFO("[UP] %d bytes, SHA2-256: %s", new_exe.length(), newsum.c_str());
 
-    LOG_INFO("[UP] Backup %s => %s", exe_path().filename().c_str(), backup_file);
-    fs::path backup_path = exe_dir().append(backup_file);
-    fs::rename(exe_path(), backup_path);
+    LOG_INFO("[UP] Backup %s => %s", exe_path_.filename().c_str(), backup_file);
+    fs::path backup_path = exe_dir_.append(backup_file);
+    fs::rename(exe_path_, backup_path);
 
-    std::ofstream of(exe_path(), std::ios::out | std::ios::binary);
+    std::ofstream of(exe_path_, std::ios::out | std::ios::binary);
     if (of.fail()) {
         LOG_ERR("[UP] failed to open executable");
         return;
@@ -226,7 +236,7 @@ void Updater::upgrade(const std::string& url, const std::string& sha256) {
         return;
     }
     of.close();
-    fs::permissions(exe_path(), fs::perms::add_perms
+    fs::permissions(exe_path_, fs::perms::add_perms
         | fs::perms::owner_read | fs::perms::owner_exec
         | fs::perms::group_read | fs::perms::group_exec
         | fs::perms::others_read | fs::perms::others_exec);

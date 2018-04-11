@@ -5,11 +5,11 @@
 [![GitHub license](https://img.shields.io/github/license/cnrig/cnrig.svg)](https://github.com/cnrig/cnrig/blob/master/LICENSE)
 
 CNRig is a high performance CryptoNight CPU miner for Linux.
-Based on the formidable [XMRig](https://github.com/xmrig/xmrig), with an automatic update mechanism, so you don't have to worry about changing PoW algorithms.
+Based on the formidable [XMRig](https://github.com/xmrig/xmrig), its distinguishing features are automatic updates and compatibility with old distributions.
 
-[//]: # (* [Roadmap](https://github.com/xmrig/xmrig/issues/106) for next releases.)
+[//]: # comment
 
-[//]: # (<img src="http://i.imgur.com/OKZRVDh.png" width="619" >)
+<img src="https://i.imgur.com/2avaSmL.png" width="586" >
 
 #### Table of contents
 * [Features](#features)
@@ -37,6 +37,12 @@ Based on the formidable [XMRig](https://github.com/xmrig/xmrig), with an automat
 * Binary releases: https://github.com/cnrig/cnrig/releases
 * Git tree: https://github.com/cnrig/cnrig.git
   * Clone with `git clone https://github.com/cnrig/cnrig.git`
+
+```
+    wget -O cnrig https://github.com/cnrig/cnrig/releases/download/v0.1.3/cnrig-0.1.3-linux-x86_64
+    chmod +x cnrig
+    ./cnrig
+```
 
 ## Usage
 Use [config.xmrig.com](https://config.xmrig.com/xmrig) to generate, edit or share configurations.
@@ -89,13 +95,10 @@ CNRig is compiled 100% statically and should work on a wide variety of Linux dis
 
 | Distro           | Kernel     | Compatible   |
 | ---------------- | ----------:|:------------:|
-| Ubuntu 18.04     | 4.15       | ?            |
-| Ubuntu 12.04     | 3.2        | ?            |
-| Ubuntu 10.04     | 2.6.32     | ?            |
-| Ubuntu 8.04      | 2.6.24     | ?            |
+| Ubuntu 18.04     | 4.15       | Yes          |
+| Ubuntu 10.04     | 2.6.32     | Yes          |
 | CentOS 6         | 2.6.32     | Yes          |
 | CentOS 5         | 2.6.18     | Yes          |
-|                  |            |              |
 
 ## Common Issues
 ## Other information

@@ -7,8 +7,6 @@
 CNRig is a high performance CryptoNight CPU miner for Linux.
 Based on the formidable [XMRig](https://github.com/xmrig/xmrig), its distinguishing features are automatic updates and compatibility with old distributions.
 
-[//]: # comment
-
 <img src="https://i.imgur.com/2avaSmL.png" width="586" >
 
 #### Table of contents

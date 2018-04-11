@@ -37,9 +37,9 @@ Based on the formidable [XMRig](https://github.com/xmrig/xmrig), its distinguish
   * Clone with `git clone https://github.com/cnrig/cnrig.git`
 
 ```
-    wget -O cnrig https://github.com/cnrig/cnrig/releases/download/v0.1.3/cnrig-0.1.3-linux-x86_64
-    chmod +x cnrig
-    ./cnrig
+wget -O cnrig https://github.com/cnrig/cnrig/releases/download/v0.1.3/cnrig-0.1.3-linux-x86_64
+chmod +x cnrig
+./cnrig
 ```
 
 ## Usage
@@ -119,9 +119,7 @@ Please note performance is highly dependent on system load. The numbers above ar
 * Enable fast memory (Large/Huge pages).
 
 ## Release checksums
-### SHA-256
-```
-```
+[see update.json](update.json)
 
 ## Contacts
 * [https://github.com/cnrig/cnrig/issues](https://github.com/cnrig/cnrig/issues)

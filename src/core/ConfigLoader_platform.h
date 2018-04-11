@@ -57,6 +57,7 @@ Options:\n\
       --cpu-priority       set process priority (0 idle, 2 normal to 5 highest)\n\
       --no-huge-pages      disable huge pages support\n\
       --no-color           disable colored output\n\
+      --no-auto-update     disable automatic updates\n\
       --variant            algorithm PoW variant\n\
       --donate-level=N     donate level, default 5%% (5 minutes in 100 minutes)\n\
       --user-agent         set custom user-agent string for pool\n\
@@ -103,6 +104,7 @@ static struct option const options[] = {
     { "max-cpu-usage",     1, nullptr, xmrig::IConfig::MaxCPUUsageKey    },
     { "nicehash",          0, nullptr, xmrig::IConfig::NicehashKey       },
     { "no-color",          0, nullptr, xmrig::IConfig::ColorKey          },
+    { "no-auto-update",    0, nullptr, xmrig::IConfig::AutoUpdateKey     },
     { "no-huge-pages",     0, nullptr, xmrig::IConfig::HugePagesKey      },
     { "variant",           1, nullptr, xmrig::IConfig::VariantKey        },
     { "pass",              1, nullptr, xmrig::IConfig::PasswordKey       },
@@ -126,6 +128,7 @@ static struct option const config_options[] = {
     { "av",            1, nullptr, xmrig::IConfig::AVKey          },
     { "background",    0, nullptr, xmrig::IConfig::BackgroundKey  },
     { "colors",        0, nullptr, xmrig::IConfig::ColorKey       },
+    { "auto-update",   0, nullptr, xmrig::IConfig::AutoUpdateKey  },
     { "cpu-affinity",  1, nullptr, xmrig::IConfig::CPUAffinityKey },
     { "cpu-priority",  1, nullptr, xmrig::IConfig::CPUPriorityKey },
     { "donate-level",  1, nullptr, xmrig::IConfig::DonateLevelKey },

@@ -43,6 +43,7 @@
 #include "version.h"
 #include "workers/Workers.h"
 
+#include "update/updater.h"
 
 #ifndef XMRIG_NO_HTTPD
 #   include "api/Httpd.h"
@@ -55,7 +56,8 @@ App *App::m_self = nullptr;
 
 App::App(int argc, char **argv) :
     m_console(nullptr),
-    m_httpd(nullptr)
+    m_httpd(nullptr),
+    m_updater(nullptr)
 {
     m_self = this;
 
@@ -68,6 +70,9 @@ App::App(int argc, char **argv) :
         m_console = new Console(this);
     }
 
+    if (m_controller->config()->isAutoUpdate()) {
+        m_updater = new Updater(argv, m_controller);
+    }
     uv_signal_init(uv_default_loop(), &m_sigHUP);
     uv_signal_init(uv_default_loop(), &m_sigINT);
     uv_signal_init(uv_default_loop(), &m_sigTERM);
@@ -114,6 +119,10 @@ int App::exec()
         release();
 
         return 0;
+    }
+
+    if (m_updater != nullptr) {
+        m_updater->spawn();
     }
 
 #   ifndef XMRIG_NO_API

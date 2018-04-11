@@ -35,7 +35,7 @@ class Console;
 class Httpd;
 class Network;
 class Options;
-
+class Updater;
 
 namespace xmrig {
     class Controller;
@@ -68,6 +68,7 @@ private:
   uv_signal_t m_sigINT;
   uv_signal_t m_sigTERM;
   xmrig::Controller *m_controller;
+  Updater *m_updater;
 };
 
 

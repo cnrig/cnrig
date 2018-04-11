@@ -53,6 +53,7 @@ set(HEADERS
     src/Platform.h
     src/Summary.h
     src/update/cacert.h
+    src/update/updater.h
     src/version.h
     src/workers/CpuThread.h
     src/workers/DoubleWorker.h
@@ -110,6 +111,7 @@ set(SOURCES
     src/Platform.cpp
     src/Summary.cpp
     src/update/cacert.cpp
+    src/update/updater.cpp
     src/workers/CpuThread.cpp
     src/workers/DoubleWorker.cpp
     src/workers/Handle.cpp
@@ -175,6 +177,10 @@ add_definitions(/DUNICODE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 find_package(UV REQUIRED)
+find_package(CURL REQUIRED)
+include(cmake/FindmbedTLS.cmake)
+find_package(mbedTLS REQUIRED)
+
 
 include(cmake/flags.cmake)
 
@@ -237,6 +243,8 @@ endif()
 include_directories(src)
 include_directories(src/3rdparty)
 include_directories(${UV_INCLUDE_DIR})
+include_directories(${CURL_INCLUDE_DIR})
+include_directories(${MBEDTLS_INCLUDE_DIR})
 
 if (BUILD_STATIC)
     set(CMAKE_EXE_LINKER_FLAGS " -static")
@@ -258,4 +266,4 @@ set_source_files_properties(cacert.o PROPERTIES GENERATED TRUE)
 ###
 
 add_executable(cnrig ${HEADERS} ${SOURCES} ${SOURCES_OS} ${SOURCES_CPUID} ${HEADERS_CRYPTO} ${SOURCES_CRYPTO} ${SOURCES_SYSLOG} ${HTTPD_SOURCES} cacert.o)
-target_link_libraries(cnrig ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB})
+target_link_libraries(cnrig ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB} stdc++fs ${CURL_LIBRARIES} ${MBEDTLS_LIBRARIES})

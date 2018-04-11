@@ -65,6 +65,7 @@ xmrig::CommonConfig::CommonConfig() :
     m_apiRestricted(true),
     m_background(false),
     m_colors(true),
+    m_autoUpdate(true),
     m_syslog(false),
 
 #   ifdef XMRIG_PROXY_PROJECT
@@ -162,6 +163,10 @@ bool xmrig::CommonConfig::parseBoolean(int key, bool enable)
         m_colors = enable;
         break;
 
+    case AutoUpdateKey:
+        m_autoUpdate = enable;
+        break;
+
     case WatchKey: /* watch */
         m_watch = enable;
         break;
@@ -256,6 +261,7 @@ bool xmrig::CommonConfig::parseString(int key, const char *arg)
         return parseBoolean(key, true);
 
     case ColorKey:         /* --no-color */
+    case AutoUpdateKey:    /* --no-auto-update */
     case WatchKey:         /* --no-watch */
     case ApiRestrictedKey: /* --api-no-restricted */
     case ApiIPv6Key:       /* --api-no-ipv6 */

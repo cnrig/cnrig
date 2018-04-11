@@ -48,6 +48,7 @@ public:
         KeepAliveKey      = 'k',
         LogFileKey        = 'l',
         ColorKey          = 1002,
+        AutoUpdateKey     = 1700,
         WatchKey          = 1105,
         PasswordKey       = 'p',
         RetriesKey        = 'r',

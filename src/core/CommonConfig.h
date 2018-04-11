@@ -51,6 +51,7 @@ public:
     inline bool isApiRestricted() const            { return m_apiRestricted; }
     inline bool isBackground() const               { return m_background; }
     inline bool isColors() const                   { return m_colors; }
+    inline bool isAutoUpdate() const               { return m_autoUpdate; }
     inline bool isSyslog() const                   { return m_syslog; }
     inline const char *algoName() const            { return algoName(m_algorithm); }
     inline const char *apiToken() const            { return m_apiToken; }
@@ -83,6 +84,7 @@ protected:
     bool m_apiRestricted;
     bool m_background;
     bool m_colors;
+    bool m_autoUpdate;
     bool m_syslog;
     bool m_watch;
     char *m_apiToken;

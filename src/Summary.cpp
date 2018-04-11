@@ -52,7 +52,7 @@ static void print_versions(xmrig::Config *config)
 #   endif
 
 
-    Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mVERSIONS:     \x1B[01;36mXMRig/%s\x1B[01;37m libuv/%s%s" : " * VERSIONS:     XMRig/%s libuv/%s%s",
+    Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mVERSIONS:     \x1B[01;36mCNRig/%s\x1B[01;37m libuv/%s%s" : " * VERSIONS:     CNRig/%s libuv/%s%s",
                    APP_VERSION, uv_version_string(), buf);
 }
 

@@ -57,6 +57,7 @@ Use [config.xmrig.com](https://config.xmrig.com/xmrig) to generate, edit or shar
       --cpu-priority       set process priority (0 idle, 2 normal to 5 highest)
       --no-huge-pages      disable huge pages support
       --no-color           disable colored output
+      --no-auto-update     disable automatic updates
       --variant            algorithm PoW variant
       --donate-level=N     donate level, default 5% (5 minutes in 100 minutes)
       --user-agent         set custom user-agent string for pool

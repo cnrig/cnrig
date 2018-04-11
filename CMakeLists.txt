@@ -180,7 +180,9 @@ find_package(UV REQUIRED)
 find_package(CURL REQUIRED)
 include(cmake/FindmbedTLS.cmake)
 find_package(mbedTLS REQUIRED)
-
+if (BUILD_STATIC)
+    find_package(ZLIB REQUIRED)
+endif()
 
 include(cmake/flags.cmake)
 
@@ -266,4 +268,4 @@ set_source_files_properties(cacert.o PROPERTIES GENERATED TRUE)
 ###
 
 add_executable(cnrig ${HEADERS} ${SOURCES} ${SOURCES_OS} ${SOURCES_CPUID} ${HEADERS_CRYPTO} ${SOURCES_CRYPTO} ${SOURCES_SYSLOG} ${HTTPD_SOURCES} cacert.o)
-target_link_libraries(cnrig ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB} stdc++fs ${CURL_LIBRARIES} ${MBEDTLS_LIBRARIES})
+target_link_libraries(cnrig ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB} stdc++fs ${CURL_LIBRARIES} ${MBEDTLS_LIBRARIES} ${ZLIB_LIBRARIES})

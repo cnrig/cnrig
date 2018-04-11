@@ -68,16 +68,22 @@ void quit(int status) {
 }
 
 fs::path exe_path() {
-    char* exe = (char*) ::getauxval(AT_EXECFN);
-    if (exe == NULL) {
-        std::cerr << "[UP] unexpected error: getauxval(AT_EXECFN) == NULL" << std::endl;
-        quit(1);
+    char* p = (char*) ::getauxval(AT_EXECFN);
+    if (p == NULL) {
+        //std::cout << "[UP] getauxval(AT_EXECFN) == NULL" << std::endl;
+        char buffer[PATH_MAX];
+        p = realpath("/proc/self/exe", buffer);
+        if (p == NULL) {
+            std::cerr << "[UP] unexpected error: can't determine executable path" << std::endl;
+            quit(1);
+        }
     }
-    return fs::path(exe);
+    fs::path result(p);
+    return fs::canonical(result);
 }
 
 fs::path exe_dir() {
-    return fs::canonical(exe_path()).parent_path();
+    return exe_path().parent_path();
 }
 
 static size_t curlWriteString(void *contents, size_t size, size_t nmemb, void *userp) {

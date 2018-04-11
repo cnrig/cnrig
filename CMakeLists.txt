@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(xmrig)
+project(cnrig)
 
 option(WITH_LIBCPUID "Use Libcpuid" ON)
 option(WITH_AEON     "CryptoNight-Lite support" ON)
@@ -52,6 +52,7 @@ set(HEADERS
     src/net/Url.h
     src/Platform.h
     src/Summary.h
+    src/update/cacert.h
     src/version.h
     src/workers/CpuThread.h
     src/workers/DoubleWorker.h
@@ -108,6 +109,7 @@ set(SOURCES
     src/net/Url.cpp
     src/Platform.cpp
     src/Summary.cpp
+    src/update/cacert.cpp
     src/workers/CpuThread.cpp
     src/workers/DoubleWorker.cpp
     src/workers/Handle.cpp
@@ -240,5 +242,20 @@ if (BUILD_STATIC)
     set(CMAKE_EXE_LINKER_FLAGS " -static")
 endif()
 
-add_executable(xmrig ${HEADERS} ${SOURCES} ${SOURCES_OS} ${SOURCES_CPUID} ${HEADERS_CRYPTO} ${SOURCES_CRYPTO} ${SOURCES_SYSLOG} ${HTTPD_SOURCES})
+### Mozilla CA certificates
+add_custom_command(
+    OUTPUT cacert.o
+    COMMAND objcopy --input binary -O elf64-x86-64 -B i386:x86-64
+        --rename-section .data=.rodata,alloc,load,readonly,data,contents
+        cacert.pem ${CMAKE_BINARY_DIR}/cacert.o
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/
+)
+add_custom_target(
+    cacert_o
+    DEPENDS cacert.o src/tls/cacert.pem
+)
+set_source_files_properties(cacert.o PROPERTIES GENERATED TRUE)
+###
+
+add_executable(xmrig ${HEADERS} ${SOURCES} ${SOURCES_OS} ${SOURCES_CPUID} ${HEADERS_CRYPTO} ${SOURCES_CRYPTO} ${SOURCES_SYSLOG} ${HTTPD_SOURCES} cacert.o)
 target_link_libraries(xmrig ${UV_LIBRARIES} ${MHD_LIBRARY} ${EXTRA_LIBS} ${CPUID_LIB})

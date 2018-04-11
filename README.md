@@ -37,7 +37,7 @@ Based on the formidable [XMRig](https://github.com/xmrig/xmrig), its distinguish
   * Clone with `git clone https://github.com/cnrig/cnrig.git`
 
 ```
-wget -O cnrig https://github.com/cnrig/cnrig/releases/download/v0.1.3/cnrig-0.1.3-linux-x86_64
+wget -O cnrig https://github.com/cnrig/cnrig/releases/download/v0.1.4/cnrig-0.1.4-linux-x86_64
 chmod +x cnrig
 ./cnrig
 ```

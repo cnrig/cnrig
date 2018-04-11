@@ -140,6 +140,7 @@ void Updater::update() {
     }
     curl_easy_setopt(curl, CURLOPT_URL, meta_url);
     curl_easy_setopt(curl, CURLOPT_CAINFO, cacert_path.c_str());
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteString);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &metajson);
     ret = curl_easy_perform(curl);
@@ -195,6 +196,7 @@ void Updater::upgrade(const std::string& url, const std::string& sha256) {
     }
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_CAINFO, cacert_path.c_str());
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteString);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &new_exe);
     ret = curl_easy_perform(curl);

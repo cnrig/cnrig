@@ -40,9 +40,7 @@
 namespace fs = std::experimental::filesystem;
 
 
-//static const char* meta_url = "https://httpstat.us/400";
-//static const char* meta_url = "file:///tmp/bad_http_status.json";
-static const char* meta_url = "https://raw.githubusercontent.com/cnrig/cnrig/master/update.json";
+static const char* default_meta_url = "https://raw.githubusercontent.com/cnrig/cnrig/master/update.json";
 static const char* cacert_file = ".cnrig.cacert.pem";
 static const char* backup_file = ".cnrig.previous";
 static fs::path cacert_path;
@@ -126,6 +124,14 @@ void Updater::loop() {
     }
 }
 
+const char* Updater::meta_url() {
+#   ifdef APP_DEBUG
+    char* e = getenv("CNRIG_META_URL");
+    if (e)
+        return e;
+#endif
+    return default_meta_url;
+}
 
 void Updater::update() {
     LOG_INFO("[UP] Checking for updates");
@@ -137,7 +143,7 @@ void Updater::update() {
         LOG_ERR("[UP] curl_easy_init() failed");
         return;
     }
-    curl_easy_setopt(curl, CURLOPT_URL, meta_url);
+    curl_easy_setopt(curl, CURLOPT_URL, meta_url());
     curl_easy_setopt(curl, CURLOPT_CAINFO, cacert_path.c_str());
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteString);
@@ -148,7 +154,7 @@ void Updater::update() {
         curl_easy_cleanup(curl);
         return;
     }
-    if (startswith(meta_url, "http")) {
+    if (startswith(meta_url(), "http")) {
         long response_code;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
         if (response_code != 200) {
@@ -178,6 +184,8 @@ void Updater::update() {
             LOG_INFO("[UP] New version available: %s", doc["Version"].GetString());
         }
         upgrade(doc["URL"].GetString(), doc["SHA2-256"].GetString());
+    } else {
+        LOG_INFO("[UP] This is the latest version.");
     }
 }
 

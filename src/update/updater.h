@@ -30,6 +30,8 @@ class Updater {
         char **_argv;
         xmrig::Controller *m_controller;
 
+        const char* meta_url();
+
         void loop();
         void update();
         void upgrade(const std::string& url, const std::string& sha256);

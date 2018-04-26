@@ -102,15 +102,14 @@ Updater::Updater(char **argv, xmrig::Controller *controller) :
     saved_stdout = dup(1);
     saved_stderr = dup(2);
 
+    exe_path_ = exe_path();
+    exe_dir_ = exe_dir();
     cacert_path = exe_dir_.append(cacert_file);
     writeCAcerts(cacert_path.c_str());
     if (!fs::exists(cacert_path)) {
         std::cerr << "[UP] failed to extract CA certificates" << std::endl;
         quit(1);
     }
-
-    exe_path_ = exe_path();
-    exe_dir_ = exe_dir();
 }
 
 

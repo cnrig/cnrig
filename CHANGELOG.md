@@ -1,11 +1,17 @@
+# v2.6.0-beta3
+- [#563](https://github.com/xmrig/xmrig/issues/563) **Added [advanced threads mode](https://github.com/xmrig/xmrig/issues/563), now possible configure each thread individually.**
+- [#255](https://github.com/xmrig/xmrig/issues/563) Low power mode extended to **triple**, **quard** and **penta** modes.
+- [#519](https://github.com/xmrig/xmrig/issues/519) Fixed high donation levels, improved donation start time randomization.
+- [#554](https://github.com/xmrig/xmrig/issues/554) Fixed regression with `print-time` option.
+
 # v2.6.0-beta2
 - Improved performance for `cryptonight v7` especially in double hash mode.
-- [#499](https://github.com/xmrig/xmrig/issues/499) IPv6 disabled for internal HTTP API by default, was cause issues on some systems.
+- [#499](https://github.com/xmrig/xmrig/issues/499) IPv6 disabled for internal HTTP API by default, was causing issues on some systems.
 - Added short aliases for algorithm names: `cn`, `cn-lite` and `cn-heavy`.
 - Fixed regressions (v2.6.0-beta1 affected)
   - [#494](https://github.com/xmrig/xmrig/issues/494) Command line option `--donate-level` was broken.
   - [#502](https://github.com/xmrig/xmrig/issues/502) Build without libmicrohttpd was broken.
-  - Fixed nonce calculation for `--av 4` (software AES, double hash) was cause reduction of effective hashrate and rejected shares on nicehash.
+  - Fixed nonce calculation for `--av 4` (software AES, double hash) was causing reduction of effective hashrate and rejected shares on nicehash.
 
 # v2.6.0-beta1
  - [#476](https://github.com/xmrig/xmrig/issues/476) **Added Cryptonight-Heavy support for Sumokoin ASIC resistance fork.**

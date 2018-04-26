@@ -4,8 +4,8 @@
  * Copyright 2014      Lucas Jones <https://github.com/lucasjones>
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
- * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
- * Copyright 2016-2018 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
+ * Copyright 2016-2017 XMRig       <support@xmrig.com>
+ *
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,49 +21,43 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __CONFIGWATCHER_H__
-#define __CONFIGWATCHER_H__
 
-
-#include <stdint.h>
+#include <string.h>
 #include <uv.h>
 
-#include "rapidjson/fwd.h"
+
+#include "Platform.h"
 
 
-struct option;
+char Platform::m_defaultConfigName[520] = { 0 };
+xmrig::c_str Platform::m_userAgent;
 
 
-namespace xmrig {
-
-
-class IConfigCreator;
-class IWatcherListener;
-
-
-class ConfigWatcher
+const char *Platform::defaultConfigName()
 {
-public:
-    ConfigWatcher(const char *path, IConfigCreator *creator, IWatcherListener *listener);
-    ~ConfigWatcher();
+    size_t size = 520;
 
-private:
-    constexpr static int kDelay = 500;
+    if (*m_defaultConfigName) {
+        return m_defaultConfigName;
+    }
 
-    static void onFsEvent(uv_fs_event_t* handle, const char *filename, int events, int status);
-    static void onTimer(uv_timer_t* handle);
-    void queueUpdate();
-    void reload();
-    void start();
+    if (uv_exepath(m_defaultConfigName, &size) < 0) {
+        return nullptr;
+    }
 
-    char *m_path;
-    IConfigCreator *m_creator;
-    IWatcherListener *m_listener;
-    uv_fs_event_t m_fsEvent;
-    uv_timer_t m_timer;
-};
+    if (size < 500) {
+#       ifdef WIN32
+        char *p = strrchr(m_defaultConfigName, '\\');
+#       else
+        char *p = strrchr(m_defaultConfigName, '/');
+#       endif
 
+        if (p) {
+            strcpy(p + 1, "config.json");
+            return m_defaultConfigName;
+        }
+    }
 
-} /* namespace xmrig */
-
-#endif /* __CONFIGWATCHER_H__ */
+    *m_defaultConfigName = '\0';
+    return nullptr;
+}

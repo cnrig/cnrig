@@ -4,8 +4,8 @@
  * Copyright 2014      Lucas Jones <https://github.com/lucasjones>
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
- * Copyright 2016-2017 XMRig       <support@xmrig.com>
- *
+ * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
+ * Copyright 2016-2018 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,25 +21,51 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __PLATFORM_H__
-#define __PLATFORM_H__
+#ifndef __CONFIGWATCHER_H__
+#define __CONFIGWATCHER_H__
 
 
-class Platform
+#include <stdint.h>
+#include <uv.h>
+
+
+#include "common/utils/c_str.h"
+#include "rapidjson/fwd.h"
+
+
+struct option;
+
+
+namespace xmrig {
+
+
+class IConfigCreator;
+class IWatcherListener;
+
+
+class ConfigWatcher
 {
 public:
-    static const char *defaultConfigName();
-    static void init(const char *userAgent);
-    static void release();
-    static void setProcessPriority(int priority);
-    static void setThreadPriority(int priority);
-
-    static inline const char *userAgent() { return m_userAgent; }
+    ConfigWatcher(const char *path, IConfigCreator *creator, IWatcherListener *listener);
+    ~ConfigWatcher();
 
 private:
-    static char *m_defaultConfigName;
-    static char *m_userAgent;
+    constexpr static int kDelay = 500;
+
+    static void onFsEvent(uv_fs_event_t* handle, const char *filename, int events, int status);
+    static void onTimer(uv_timer_t* handle);
+    void queueUpdate();
+    void reload();
+    void start();
+
+    IConfigCreator *m_creator;
+    IWatcherListener *m_listener;
+    uv_fs_event_t m_fsEvent;
+    uv_timer_t m_timer;
+    xmrig::c_str m_path;
 };
 
 
-#endif /* __PLATFORM_H__ */
+} /* namespace xmrig */
+
+#endif /* __CONFIGWATCHER_H__ */

@@ -22,18 +22,18 @@
  */
 
 
+#include "common/Platform.h"
 #include "interfaces/IStrategyListener.h"
 #include "net/Client.h"
 #include "net/strategies/SinglePoolStrategy.h"
-#include "Platform.h"
 
 
-SinglePoolStrategy::SinglePoolStrategy(const Url *url, int retryPause, IStrategyListener *listener, bool quiet) :
+SinglePoolStrategy::SinglePoolStrategy(const Pool &pool, int retryPause, IStrategyListener *listener, bool quiet) :
     m_active(false),
     m_listener(listener)
 {
     m_client = new Client(0, Platform::userAgent(), this);
-    m_client->setUrl(url);
+    m_client->setPool(pool);
     m_client->setRetryPause(retryPause * 1000);
     m_client->setQuiet(quiet);
 }

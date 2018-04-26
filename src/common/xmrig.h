@@ -30,6 +30,7 @@ namespace xmrig
 
 
 enum Algo {
+    INVALID_ALGO = -1,
     CRYPTONIGHT,       /* CryptoNight (Monero) */
     CRYPTONIGHT_LITE,  /* CryptoNight-Lite (AEON) */
     CRYPTONIGHT_HEAVY, /* CryptoNight-Heavy (SUMO) */
@@ -60,6 +61,13 @@ enum Variant {
     VARIANT_AUTO = -1, // Autodetect
     VARIANT_NONE = 0,  // Original CryptoNight
     VARIANT_V1   = 1   // Monero v7 PoW
+};
+
+
+enum AesMode {
+    AES_AUTO,
+    AES_HW,
+    AES_SOFT
 };
 
 

@@ -75,6 +75,7 @@ public:
         MaxCPUUsageKey    = 1004,
         SafeKey           = 1005,
         ThreadsKey        = 't',
+        HardwareAESKey    = 1011,
 
         // xmrig-proxy
         AccessLogFileKey  = 'A',

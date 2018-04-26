@@ -14,13 +14,16 @@ include (cmake/cpu.cmake)
 set(HEADERS
     src/api/NetworkState.h
     src/App.h
+    src/common/config/CommonConfig.h
+    src/common/config/ConfigLoader.h
+    src/common/config/ConfigWatcher.h
+    src/common/Platform.h
+    src/common/utils/c_str.h
+    src/common/utils/mm_malloc.h
+    src/common/xmrig.h
     src/Console.h
-    src/core/CommonConfig.h
     src/core/Config.cpp
-    src/core/ConfigLoader.cpp
-    src/core/ConfigLoader.h
     src/core/ConfigLoader_platform.h
-    src/core/ConfigWatcher.cpp
     src/core/Controller.h
     src/Cpu.h
     src/interfaces/IClientListener.h
@@ -44,25 +47,22 @@ set(HEADERS
     src/net/Job.h
     src/net/JobResult.h
     src/net/Network.h
+    src/net/Pool.h
     src/net/Storage.h
     src/net/strategies/DonateStrategy.h
     src/net/strategies/FailoverStrategy.h
     src/net/strategies/SinglePoolStrategy.h
     src/net/SubmitResult.h
-    src/net/Url.h
-    src/Platform.h
     src/Summary.h
     src/update/cacert.h
     src/update/updater.h
     src/version.h
     src/workers/CpuThread.h
-    src/workers/DoubleWorker.h
     src/workers/Handle.h
     src/workers/Hashrate.h
-    src/workers/SingleWorker.h
+    src/workers/MultiWorker.h
     src/workers/Worker.h
     src/workers/Workers.h
-    src/xmrig.h
    )
 
 set(HEADERS_CRYPTO
@@ -90,11 +90,12 @@ endif()
 set(SOURCES
     src/api/NetworkState.cpp
     src/App.cpp
+    src/common/config/CommonConfig.cpp
+    src/common/config/ConfigLoader.cpp
+    src/common/config/ConfigWatcher.cpp
+    src/common/Platform.cpp
     src/Console.cpp
-    src/core/CommonConfig.cpp
     src/core/Config.cpp
-    src/core/ConfigLoader.cpp
-    src/core/ConfigWatcher.cpp
     src/core/Controller.cpp
     src/log/ConsoleLog.cpp
     src/log/FileLog.cpp
@@ -103,20 +104,18 @@ set(SOURCES
     src/net/Client.cpp
     src/net/Job.cpp
     src/net/Network.cpp
+    src/net/Pool.cpp
     src/net/strategies/DonateStrategy.cpp
     src/net/strategies/FailoverStrategy.cpp
     src/net/strategies/SinglePoolStrategy.cpp
     src/net/SubmitResult.cpp
-    src/net/Url.cpp
-    src/Platform.cpp
     src/Summary.cpp
     src/update/cacert.cpp
     src/update/updater.cpp
     src/workers/CpuThread.cpp
-    src/workers/DoubleWorker.cpp
     src/workers/Handle.cpp
     src/workers/Hashrate.cpp
-    src/workers/SingleWorker.cpp
+    src/workers/MultiWorker.cpp
     src/workers/Worker.cpp
     src/workers/Workers.cpp
     src/xmrig.cpp
@@ -134,9 +133,9 @@ if (WIN32)
     set(SOURCES_OS
         res/app.rc
         src/App_win.cpp
+        src/common/Platform_win.cpp
         src/Cpu_win.cpp
         src/Mem_win.cpp
-        src/Platform_win.cpp
         )
 
     add_definitions(/DWIN32)
@@ -144,16 +143,16 @@ if (WIN32)
 elseif (APPLE)
     set(SOURCES_OS
         src/App_unix.cpp
+        src/common/Platform_mac.cpp
         src/Cpu_mac.cpp
         src/Mem_unix.cpp
-        src/Platform_mac.cpp
         )
 else()
     set(SOURCES_OS
         src/App_unix.cpp
+        src/common/Platform_unix.cpp
         src/Cpu_unix.cpp
         src/Mem_unix.cpp
-        src/Platform_unix.cpp
         )
 
     set(EXTRA_LIBS pthread rt)
@@ -224,14 +223,14 @@ if (WITH_HTTPD)
         set(HTTPD_SOURCES
             src/api/Api.h
             src/api/ApiRouter.h
-            src/api/HttpBody.h
-            src/api/Httpd.h
-            src/api/HttpReply.h
-            src/api/HttpRequest.h
+            src/common/api/HttpBody.h
+            src/common/api/Httpd.h
+            src/common/api/HttpReply.h
+            src/common/api/HttpRequest.h
             src/api/Api.cpp
             src/api/ApiRouter.cpp
-            src/api/Httpd.cpp
-            src/api/HttpRequest.cpp
+            src/common/api/Httpd.cpp
+            src/common/api/HttpRequest.cpp
             )
     else()
         message(FATAL_ERROR "microhttpd NOT found: use `-DWITH_HTTPD=OFF` to build without http deamon support")

@@ -22,13 +22,13 @@
  */
 
 
+#include "common/Platform.h"
+#include "common/xmrig.h"
 #include "interfaces/IStrategyListener.h"
 #include "net/Client.h"
 #include "net/Job.h"
 #include "net/strategies/DonateStrategy.h"
 #include "net/strategies/FailoverStrategy.h"
-#include "Platform.h"
-#include "xmrig.h"
 
 
 extern "C"
@@ -56,16 +56,16 @@ DonateStrategy::DonateStrategy(int level, const char *user, int algo, IStrategyL
     Job::toHex(hash, 32, userId);
 
     if (algo == xmrig::CRYPTONIGHT) {
-        m_pools.push_back(new Url("pool.monero.hashvault.pro", 3333, "42qVSzujiEXTNZ4CZyJqawbYbYLJzJzvjHz88zcAaFvY99bEAqaRmcePyoBTbhvDVW9xA3wRVK9dwD7uLDR2pSqoNuZhgqh", "x", false, false));
-        m_pools.push_back(new Url("pool.monero.hashvault.pro", 80, "42qVSzujiEXTNZ4CZyJqawbYbYLJzJzvjHz88zcAaFvY99bEAqaRmcePyoBTbhvDVW9xA3wRVK9dwD7uLDR2pSqoNuZhgqh", "x", false, false));
+        m_pools.push_back(Pool("pool.monero.hashvault.pro", 3333, "42qVSzujiEXTNZ4CZyJqawbYbYLJzJzvjHz88zcAaFvY99bEAqaRmcePyoBTbhvDVW9xA3wRVK9dwD7uLDR2pSqoNuZhgqh", "x", false, false));
+        m_pools.push_back(Pool("pool.monero.hashvault.pro", 80, "42qVSzujiEXTNZ4CZyJqawbYbYLJzJzvjHz88zcAaFvY99bEAqaRmcePyoBTbhvDVW9xA3wRVK9dwD7uLDR2pSqoNuZhgqh", "x", false, false));
     }
     else if (algo == xmrig::CRYPTONIGHT_HEAVY) {
-        m_pools.push_back(new Url("pool.sumokoin.hashvault.pro", 3333, "Sumoo4FkMNtBdV6qaC2VfSc55rnHiMYMJMc5oL3HufStZrtKEDr8Ay2L7qVHY7MGKpgLumq1ecEF2e84mSmHXiU761mrJWwqYas", "x", false, false));
-        m_pools.push_back(new Url("pool.sumokoin.hashvault.pro", 80, "Sumoo4FkMNtBdV6qaC2VfSc55rnHiMYMJMc5oL3HufStZrtKEDr8Ay2L7qVHY7MGKpgLumq1ecEF2e84mSmHXiU761mrJWwqYas", "x", false, false));
+        m_pools.push_back(Pool("pool.sumokoin.hashvault.pro", 3333, "Sumoo4FkMNtBdV6qaC2VfSc55rnHiMYMJMc5oL3HufStZrtKEDr8Ay2L7qVHY7MGKpgLumq1ecEF2e84mSmHXiU761mrJWwqYas", "x", false, false));
+        m_pools.push_back(Pool("pool.sumokoin.hashvault.pro", 80, "Sumoo4FkMNtBdV6qaC2VfSc55rnHiMYMJMc5oL3HufStZrtKEDr8Ay2L7qVHY7MGKpgLumq1ecEF2e84mSmHXiU761mrJWwqYas", "x", false, false));
     }
     else {
-        m_pools.push_back(new Url("pool.aeon.hashvault.pro", 3333, "WmsMK5Mw4UhfahPeRNDes7agWT6CpPYGcjRkw5aUiSkv47g1z6g1WafCUgBsixnLSsaZ7NkBuL6DTaxw9hHrS2j83CK8zArop", "x", false, false));
-        m_pools.push_back(new Url("pool.aeon.hashvault.pro", 80, "WmsMK5Mw4UhfahPeRNDes7agWT6CpPYGcjRkw5aUiSkv47g1z6g1WafCUgBsixnLSsaZ7NkBuL6DTaxw9hHrS2j83CK8zArop", "x", false, false));
+        m_pools.push_back(Pool("pool.aeon.hashvault.pro", 3333, "WmsMK5Mw4UhfahPeRNDes7agWT6CpPYGcjRkw5aUiSkv47g1z6g1WafCUgBsixnLSsaZ7NkBuL6DTaxw9hHrS2j83CK8zArop", "x", false, false));
+        m_pools.push_back(Pool("pool.aeon.hashvault.pro", 80, "WmsMK5Mw4UhfahPeRNDes7agWT6CpPYGcjRkw5aUiSkv47g1z6g1WafCUgBsixnLSsaZ7NkBuL6DTaxw9hHrS2j83CK8zArop", "x", false, false));
     }
 
     m_strategy = new FailoverStrategy(m_pools, 1, 1, this, true);

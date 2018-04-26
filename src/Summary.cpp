@@ -32,7 +32,7 @@
 #include "Cpu.h"
 #include "log/Log.h"
 #include "Mem.h"
-#include "net/Url.h"
+#include "net/Pool.h"
 #include "Summary.h"
 #include "version.h"
 
@@ -58,14 +58,15 @@ static void print_versions(xmrig::Config *config)
 
 
 static void print_memory(xmrig::Config *config) {
+#   ifdef _WIN32
     if (config->isColors()) {
-        Log::i()->text("\x1B[01;32m * \x1B[01;37mHUGE PAGES:   %s, %s",
-                       Mem::isHugepagesAvailable() ? "\x1B[01;32mavailable" : "\x1B[01;31munavailable",
-                       Mem::isHugepagesEnabled() ? "\x1B[01;32menabled" : "\x1B[01;31mdisabled");
+        Log::i()->text("\x1B[01;32m * \x1B[01;37mHUGE PAGES:   %s",
+                       Mem::isHugepagesAvailable() ? "\x1B[01;32mavailable" : "\x1B[01;31munavailable");
     }
     else {
-        Log::i()->text(" * HUGE PAGES:   %s, %s", Mem::isHugepagesAvailable() ? "available" : "unavailable", Mem::isHugepagesEnabled() ? "enabled" : "disabled");
+        Log::i()->text(" * HUGE PAGES:   %s", Mem::isHugepagesAvailable() ? "available" : "unavailable");
     }
+#   endif
 }
 
 
@@ -92,38 +93,47 @@ static void print_cpu(xmrig::Config *config)
 
 static void print_threads(xmrig::Config *config)
 {
-    char buf[32];
-    if (config->affinity() != -1L) {
-        snprintf(buf, 32, ", affinity=0x%" PRIX64, config->affinity());
+    if (config->threadsMode() != xmrig::Config::Advanced) {
+        char buf[32];
+        if (config->affinity() != -1L) {
+            snprintf(buf, 32, ", affinity=0x%" PRIX64, config->affinity());
+        }
+        else {
+            buf[0] = '\0';
+        }
+
+        Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mTHREADS:      \x1B[01;36m%d\x1B[01;37m, %s, av=%d, %sdonate=%d%%%s" : " * THREADS:      %d, %s, av=%d, %sdonate=%d%%%s",
+                       config->threadsCount(),
+                       config->algoName(),
+                       config->algoVariant(),
+                       config->isColors() && config->donateLevel() == 0 ? "\x1B[01;31m" : "",
+                       config->donateLevel(),
+                       buf);
     }
     else {
-        buf[0] = '\0';
+        Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mTHREADS:      \x1B[01;36m%d\x1B[01;37m, %s, %sdonate=%d%%" : " * THREADS:      %d, %s, %sdonate=%d%%",
+                       config->threadsCount(),
+                       config->algoName(),
+                       config->isColors() && config->donateLevel() == 0 ? "\x1B[01;31m" : "",
+                       config->donateLevel());
     }
-
-    Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mTHREADS:      \x1B[01;36m%d\x1B[01;37m, %s, av=%d, %sdonate=%d%%%s" : " * THREADS:      %d, %s, av=%d, %sdonate=%d%%%s",
-                   config->threadsCount(),
-                   config->algoName(),
-                   config->algoVariant(),
-                   config->isColors() && config->donateLevel() == 0 ? "\x1B[01;31m" : "",
-                   config->donateLevel(),
-                   buf);
 }
 
 
 static void print_pools(xmrig::Config *config)
 {
-    const std::vector<Url*> &pools = config->pools();
+    const std::vector<Pool> &pools = config->pools();
 
     for (size_t i = 0; i < pools.size(); ++i) {
-        Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mPOOL #%d:      \x1B[01;36m%s:%d" : " * POOL #%d:      %s:%d",
+        Log::i()->text(config->isColors() ? "\x1B[01;32m * \x1B[01;37mPOOL #%d:      \x1B[01;36m%s" : " * POOL #%d:      %s",
                        i + 1,
-                       pools[i]->host(),
-                       pools[i]->port());
+                       pools[i].url()
+                       );
     }
 
 #   ifdef APP_DEBUG
     for (size_t i = 0; i < pools.size(); ++i) {
-        Log::i()->text("%s:%d, user: %s, pass: %s, ka: %d, nicehash: %d", pools[i]->host(), pools[i]->port(), pools[i]->user(), pools[i]->password(), pools[i]->keepAlive(), pools[i]->isNicehash());
+        Log::i()->text("%s:%d, user: %s, pass: %s, ka: %d, nicehash: %d", pools[i].host(), pools[i].port(), pools[i].user(), pools[i].password(), pools[i].keepAlive(), pools[i].isNicehash());
     }
 #   endif
 }

@@ -28,7 +28,7 @@
 
 #include "core/Config.h"
 #include "core/Controller.h"
-#include "log/Log.h"
+#include "common/log/Log.h"
 #include "update/cacert.h"
 #include "update/updater.h"
 #include "version.h"

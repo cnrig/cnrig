@@ -28,14 +28,13 @@
 #define APP_ID        "cnrig"
 #define APP_NAME      "CNRig"
 #define APP_DESC      "CNRig CPU miner"
-#define APP_VERSION   "0.1.5"
+#define APP_VERSION   "0.1.6"
 #define APP_COPYRIGHT "Copyright (C) 2016-2018 xmrig.com, (C) 2018 mode0x13"
 #define APP_KIND      "cpu"
 
 #define APP_VER_MAJOR  0
 #define APP_VER_MINOR  1
-#define APP_VER_BUILD  0
-#define APP_VER_REV    5
+#define APP_VER_PATCH  6
 
 #ifdef _MSC_VER
 #   if (_MSC_VER >= 1910)

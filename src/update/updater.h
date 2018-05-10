@@ -29,8 +29,8 @@ class Updater {
         int saved_stdout, saved_stderr;
         char **_argv;
         xmrig::Controller *m_controller;
-
         const char* meta_url();
+        bool enabled;
 
         void loop();
         void update();

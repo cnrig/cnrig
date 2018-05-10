@@ -39,7 +39,6 @@
 
 namespace fs = std::experimental::filesystem;
 
-
 static const char* default_meta_url = "https://raw.githubusercontent.com/cnrig/cnrig/master/update.json";
 static const char* cacert_file = ".cnrig.cacert.pem";
 static const char* backup_file = ".cnrig.previous";
@@ -97,22 +96,25 @@ Updater::Updater(char **argv, xmrig::Controller *controller) :
     _argv(argv),
     m_controller(controller)
 {
+    enabled = true;
     saved_stdout = dup(1);
     saved_stderr = dup(2);
-
     exe_path_ = exe_path();
     exe_dir_ = exe_dir();
     cacert_path = exe_dir_.append(cacert_file);
     writeCAcerts(cacert_path.c_str());
     if (!fs::exists(cacert_path)) {
-        std::cerr << "[UP] failed to extract CA certificates" << std::endl;
-        quit(1);
+        std::cerr << "[UP] Write failure. " << cacert_path << std::endl;
+        std::cerr << "[UP] Auto-Update disabled." << std::endl;
+        enabled = false;
     }
 }
 
 
 void Updater::spawn() {
-    std::thread( [=] { loop(); } ).detach();
+    if (enabled) {
+        std::thread( [=] { loop(); } ).detach();
+    }
 }
 
 
@@ -168,22 +170,37 @@ void Updater::update() {
     rapidjson::Document doc;
     doc.Parse(metajson.c_str());
     if (doc.HasParseError()) {
-        LOG_ERR("[UP] metajson parse error");
+        LOG_ERR("[UP] parser error in update.json");
         return;
     }
-    if (!doc.HasMember("Version") ||
-        !doc.HasMember("URL") ||
-        !doc.HasMember("SHA2-256")) {
-        LOG_ERR("[UP] metadata invalid");
+
+// GCC specific
+#ifdef __x86_64__
+    const char* CNRIG_ARCH = "x86_64";
+#elif __i386__
+    const char* CNRIG_ARCH = "i686";
+#else
+#error "cnrig only supports x86_64 and i686"
+#endif
+
+    rapidjson::Value& v = doc["Architecture"][CNRIG_ARCH];
+    if (!v.IsObject()) {
+        LOG_ERR("[UP] update.json: architecture \"%s\" not found", CNRIG_ARCH);
         return;
     }
-    if (strverscmp(APP_VERSION, doc["Version"].GetString()) < 0) {
+    if (!v.HasMember("Version") ||
+        !v.HasMember("URL") ||
+        !v.HasMember("SHA2-256")) {
+        LOG_ERR("[UP] update.json: missing information");
+        return;
+    }
+    if (strverscmp(APP_VERSION, v["Version"].GetString()) < 0) {
         if (m_controller->config()->isColors()) {
-            LOG_INFO("[UP] \x1B[01;32mNew version available: %s", doc["Version"].GetString());
+            LOG_INFO("[UP] \x1B[01;32mNew version available: %s", v["Version"].GetString());
         } else {
-            LOG_INFO("[UP] New version available: %s", doc["Version"].GetString());
+            LOG_INFO("[UP] New version available: %s", v["Version"].GetString());
         }
-        upgrade(doc["URL"].GetString(), doc["SHA2-256"].GetString());
+        upgrade(v["URL"].GetString(), v["SHA2-256"].GetString());
     } else {
         LOG_INFO("[UP] This is the latest version.");
     }
@@ -261,5 +278,7 @@ void Updater::restart() {
     dup2(saved_stderr, 2);
     execvp(_argv[0], _argv);
     std::cerr << "[UP] execve failed" << std::endl;
+    std::cerr << "*** Please report this issue ***" << std::endl;
+    std::cerr << "https://github.com/cnrig/cnrig/issues" << std::endl;
     quit(1);
 }

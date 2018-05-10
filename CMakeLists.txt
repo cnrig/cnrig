@@ -259,9 +259,14 @@ if (BUILD_STATIC)
 endif()
 
 ### Mozilla CA certificates
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64)$")
+	set(_OBJCOPY_OPTS "-O" "elf64-x86-64" "-B" "i386:x86-64")
+else()
+	set(_OBJCOPY_OPTS "-O" "elf-x86" "-B" "i386:x86")
+endif()
 add_custom_command(
     OUTPUT cacert.o
-    COMMAND objcopy --input binary -O elf64-x86-64 -B i386:x86-64
+    COMMAND objcopy --input binary ${_OBJCOPY_OPTS}
         --rename-section .data=.rodata,alloc,load,readonly,data,contents
         cacert.pem ${CMAKE_BINARY_DIR}/cacert.o
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/
